@@ -2,12 +2,12 @@
 
 import { configureStore } from "@reduxjs/toolkit"
 import authReducer from "./features/auth/authSlice"
-import countsReducer from "./features/counts/countsSlice"
+import questionReducer from "./features/question/questionSlice"
 
 export const store = configureStore({
 	reducer: {
 		auth: authReducer,
-		counts: countsReducer,
+		questions: questionReducer,
 	},
 })
 
