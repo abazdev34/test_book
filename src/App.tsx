@@ -15,6 +15,7 @@ import VerifyEmail from "./pages/Auth/VerifyEmail"
 import Home from "./pages/Home/"
 import Dashboard from "./pages/Questions"
 import Results from "./pages/Results"
+import StudentsResults from './pages/admin/studentsResults'
 // import { refresh } from "./components/RefreshToken"
 // import createStore from "react-auth-kit/createStore"
 const App: React.FC = () => {
@@ -53,6 +54,7 @@ const App: React.FC = () => {
 						<Route path="/dashboard" element={<Dashboard />} />
 						<Route path="/results" element={<Results />} />
 					</Route>
+					<Route path="/admin" element={<StudentsResults/>} />
 
 					<Route element={<ProtectedAuthRoute redirectPath="/dashboard" />}>
 						<Route path="/login" element={<Login />} />

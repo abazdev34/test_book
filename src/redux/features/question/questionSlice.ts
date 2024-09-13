@@ -18,6 +18,24 @@ export const getQuestions = createAsyncThunk(
 		}
 	}
 )
+
+
+
+export const getAllResults = createAsyncThunk(
+	"questions/getALLResults",
+	async () => {
+		try {
+			const response = await axiosInstance.get(
+				"/api/collections/results/records"
+			)
+			console.log(response.data) // Check the structure of the response
+			return response.data // Ensure this is the correct path to the items
+		} catch (error) {
+			console.log(error)
+			throw error // Throw the error to be caught in the rejected case
+		}
+	}
+)
 interface ISubmitAnswer {
 	student_id: string
 	questionId: string
@@ -93,18 +111,21 @@ interface IResults {
 	answer: string
 	isCorrect: boolean
 	time: number
+	question: IQuestion
 }
 interface QuestionState {
 	questions: IQuestion[]
 	loading: boolean
 	error: string | null
 	results: IResults[]
+	allResults: IResults[]
 }
 export const initialState: QuestionState = {
 	questions: [],
 	loading: false,
 	error: "",
 	results: [],
+	allResults: [],
 }
 const questionSlice = createSlice({
 	name: "questions", // Change this to 'questions' for clarity
@@ -113,6 +134,7 @@ const questionSlice = createSlice({
 		loading: false,
 		error: null,
 		results: [],
+		allResults:[]
 	},
 	reducers: {},
 	extraReducers: builder => {
@@ -138,6 +160,19 @@ const questionSlice = createSlice({
 				state.results = action.payload // Store the fetched questions
 			})
 			.addCase(getResults.rejected, (state, action) => {
+				state.loading = false
+				state.error = action.payload as string
+
+			})
+			.addCase(getAllResults.pending, state => {
+				state.loading = true
+				state.error = null // Reset error on new request
+			})
+			.addCase(getAllResults.fulfilled, (state, action) => {
+				state.loading = false
+				state.allResults = action.payload // Store the fetched questions
+			})
+			.addCase(getAllResults.rejected, (state, action) => {
 				state.loading = false
 				state.error = action.payload as string
 			})

@@ -56,6 +56,14 @@ export default function Header() {
 						Жооптор
 					</button>
 				</NavLink>
+				<NavLink to="/admin">
+					<button
+						className="py-2 px-4 border-2 rounded-md text-center"
+						style={buttonStyle}
+					>
+						Админ
+					</button>
+				</NavLink>
 				{isAuthenticated ? (
 					<>
 						<button
