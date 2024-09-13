@@ -57,6 +57,7 @@ export default function Dashboard() {
 				isCorrect: isCorrect,
 				timeSpent: 60 - timeLeft, // Convert to milliseconds
 				question: currentQuestion,
+				student_name: auth.student_name,
 			})
 		)
 	}
@@ -71,23 +72,24 @@ export default function Dashboard() {
 			setSelectedAnswer("")
 			startTimer()
 		} else {
-			// Quiz finished
+			// Тест бүттү
 			alert("Quiz completed!")
 			localStorage.setItem("isFinished", "true")
+			window.location.reload()
 		}
 	}
-	if(isFinished) return <p>Тестти тапшыргансыз кийинки окуучуга орун бериңиз!</p>
+	if (isFinished)
+		return <p>Тестти тапшыргансыз кийинки окуучуга орун бериңиз!</p>
 	if (loading) return <p>Жүктөлүүдө...</p>
 	if (error) return <p>Ката : {error}</p>
 	if (questions.length === 0) return <p>No questions available.</p>
-
 
 	const currentQuestion = questions[questionNumber - 1]
 	return (
 		<div className="p-4">
 			<h1 className="text-2xl mb-4">
 				Кош келдиңиз{" "}
-				<span className="font-bold text-orange-500 ">{auth.email}</span>!
+				<span className="font-bold text-orange-500 ">{auth.student_name}</span>!
 			</h1>
 
 			<div className="mb-4">

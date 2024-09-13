@@ -11,6 +11,7 @@ export const groupResultsByStudent = results => {
 				wrongAnswers: 0,
 				totalTime: 0,
 				results: [],
+				student_name: result.student_name,
 			}
 		}
 

@@ -10,6 +10,8 @@ import {
 	formatTime,
 	sortStudentResults,
 } from "./studentsResultsFunc"
+import { IoPerson } from "react-icons/io5"
+import { RxLapTimer } from "react-icons/rx"
 
 const StudentsResults = () => {
 	const dispatch = useDispatch()
@@ -37,6 +39,7 @@ const StudentsResults = () => {
 	if (error)
 		return <div className="text-center py-4 text-red-600">Ката: {error}</div>
 
+	console.log("sortedResults", sortedResults)
 	return (
 		<div className="container mx-auto px-4 py-8">
 			<h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
@@ -76,11 +79,11 @@ const StudentsResults = () => {
 							className="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow duration-300"
 						>
 							<div className="flex items-center justify-between mb-4">
-								<strong className="text-xl text-gray-800">
-									{index + 1}. Окуучунун аты: {studentResult.student_id}
+								<strong className="text-[14px] sm:text-lg md:text-xl  text-gray-800 flex items-center gap-2">
+									{index + 1}.  <IoPerson />: {studentResult.student_name}
 								</strong>
-								<span className="text-sm text-gray-500">
-									Кеткен убакыт: {formatTime(studentResult.totalTime)}
+								<span className="text-sm text-gray-500 flex items-center gap-2">
+									<RxLapTimer />: {formatTime(studentResult.totalTime)}
 								</span>
 							</div>
 							<div className="flex justify-between items-center">

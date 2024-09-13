@@ -19,8 +19,6 @@ export const getQuestions = createAsyncThunk(
 	}
 )
 
-
-
 export const getAllResults = createAsyncThunk(
 	"questions/getALLResults",
 	async () => {
@@ -43,6 +41,7 @@ interface ISubmitAnswer {
 	timeSpent: number
 	isCorrect: boolean
 	question: IQuestion
+	student_name: string
 }
 export const submitAnswer = createAsyncThunk(
 	"questions/submitAnswer",
@@ -53,6 +52,7 @@ export const submitAnswer = createAsyncThunk(
 		timeSpent,
 		isCorrect,
 		question,
+		student_name,
 	}: ISubmitAnswer) => {
 		try {
 			const response = await axiosInstance.post(
@@ -64,6 +64,7 @@ export const submitAnswer = createAsyncThunk(
 					isCorrect: isCorrect,
 					time: timeSpent,
 					question: question,
+					student_name: student_name,
 				}
 			)
 			console.log(response.data) // Check the structure of the response
@@ -134,7 +135,7 @@ const questionSlice = createSlice({
 		loading: false,
 		error: null,
 		results: [],
-		allResults:[]
+		allResults: [],
 	},
 	reducers: {},
 	extraReducers: builder => {
@@ -162,7 +163,6 @@ const questionSlice = createSlice({
 			.addCase(getResults.rejected, (state, action) => {
 				state.loading = false
 				state.error = action.payload as string
-
 			})
 			.addCase(getAllResults.pending, state => {
 				state.loading = true
