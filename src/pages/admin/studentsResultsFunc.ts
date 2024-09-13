@@ -46,3 +46,14 @@ export const sortStudentResults = (studentResults, sortBy) => {
 		}
 	})
 }
+export const sortResultsByCorrectAnswersAndTime = (results) => {
+  return Object.values(groupResultsByStudent(results)).sort((a, b) => {
+    // First, sort by correct answers (descending)
+    if (b.correctAnswers !== a.correctAnswers) {
+      return b.correctAnswers - a.correctAnswers;
+    }
+    // If correct answers are equal, sort by total time (ascending)
+    return a.totalTime - b.totalTime;
+  });
+};
+

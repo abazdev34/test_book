@@ -64,6 +64,14 @@ export default function Header() {
 						Админ
 					</button>
 				</NavLink>
+				<NavLink to="/all_results">
+					<button
+						className="py-2 px-4 border-2 rounded-md text-center"
+						style={buttonStyle}
+					>
+						Тизме
+					</button>
+				</NavLink>
 				{isAuthenticated ? (
 					<>
 						<button

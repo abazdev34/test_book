@@ -100,7 +100,7 @@ const StudentsResults = () => {
 									<span className="text-sm text-gray-600">Ката жооптор</span>
 								</div>
 							</div>
-							<div className="mt-4 bg-gray-200 rounded-full h-2">
+							<div className="mt-4 bg-red-500 rounded-full h-2">
 								<div
 									className="bg-green-500 h-2 rounded-full"
 									style={{
