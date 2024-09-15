@@ -97,6 +97,22 @@ export const getResults = createAsyncThunk(
 	}
 )
 
+export const addQuestion = createAsyncThunk(
+	"questions/addQuestion",
+	async question => {
+		try {
+			const response = await axiosInstance.post(
+				"/api/collections/questions/records",
+				question
+			)
+			return response.data
+		} catch (error) {
+			console.error(error)
+			throw error
+		}
+	}
+)
+
 interface IQuestion {
 	id: string
 	title: string
