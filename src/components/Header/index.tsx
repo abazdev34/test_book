@@ -1,27 +1,29 @@
 /** @format */
 
-import { NavLink } from "react-router-dom"
-import useSignOut from "react-auth-kit/hooks/useSignOut"
-import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated"
-import { PiSignOutBold } from "react-icons/pi"
-import { MdHome } from "react-icons/md"
-import { FaList } from "react-icons/fa"
-import { useState } from "react"
-import AskToLogOut from "./AskToLogOut"
+import { useState } from 'react'
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser'
+import useIsAuthenticated from 'react-auth-kit/hooks/useIsAuthenticated'
+import useSignOut from 'react-auth-kit/hooks/useSignOut'
+import { FaList } from 'react-icons/fa'
+import { MdHome } from 'react-icons/md'
+import { PiSignOutBold } from 'react-icons/pi'
+import { NavLink } from 'react-router-dom'
+import AskToLogOut from './AskToLogOut'
 
 // Warm color palette
 const colors = {
-	primary: "#e67e22", // Orange
-	secondary: "#f39c12", // Amber
-	accent: "#d35400", // Dark Orange
-	text: "#34495e", // Dark Blue-Gray
-	background: "#fff", // White
+	primary: '#e67e22', // Orange
+	secondary: '#f39c12', // Amber
+	accent: '#d35400', // Dark Orange
+	text: '#34495e', // Dark Blue-Gray
+	background: '#fff', // White
 }
 
 export default function Header() {
 	const isAuthenticated = useIsAuthenticated()
 	const [logOut, setLogOut] = useState(false)
 	const signOut = useSignOut()
+	const auth = useAuthUser()
 
 	const buttonStyle = {
 		borderColor: colors.primary,
@@ -30,52 +32,58 @@ export default function Header() {
 	}
 
 	return (
-		<header className="w-full flex ">
-			<nav className="flex justify-center items-center gap-4 h-16 flex-wrap">
-				<NavLink to="/">
+		<header className='w-full flex '>
+			<nav className='flex justify-center items-center gap-4 h-16 flex-wrap'>
+				<NavLink to='/'>
 					<button
-						className="py-2 px-4 border-2 rounded-md text-center"
+						className='py-2 px-4 border-2 h-10 rounded-md text-center'
 						style={buttonStyle}
 					>
 						<MdHome />
 					</button>
 				</NavLink>
-				<NavLink to="/dashboard">
-					<button
-						className="py-2 px-4 border-2 rounded-md text-center"
-						style={buttonStyle}
-					>
-						<FaList />
-					</button>
-				</NavLink>
-				<NavLink to="/results">
-					<button
-						className="py-2 px-4 border-2 rounded-md text-center"
-						style={buttonStyle}
-					>
-						Жооптор
-					</button>
-				</NavLink>
-				<NavLink to="/admin">
-					<button
-						className="py-2 px-4 border-2 rounded-md text-center"
-						style={buttonStyle}
-					>
-						Админ
-					</button>
-				</NavLink>
-				<NavLink to="/all_results">
-					<button
-						className="py-2 px-4 border-2 rounded-md text-center"
-						style={buttonStyle}
-					>
-						Тизме
-					</button>
-				</NavLink>
+
 				{isAuthenticated ? (
 					<>
+						<NavLink to='/dashboard'>
+							<button
+								className='py-2 px-4 border-2 h-10 rounded-md text-center'
+								style={buttonStyle}
+							>
+								<FaList />
+							</button>
+						</NavLink>
+						{auth.role === 'admin' ? (
+							<>
+								<NavLink to='/admin'>
+									<button
+										className='py-2 px-4 border-2 h-10 rounded-md text-center'
+										style={buttonStyle}
+									>
+										🛠️
+									</button>
+								</NavLink>
+								<NavLink to='/all_results'>
+									<button
+										className='py-2 px-4 border-2 h-10 h-10 rounded-md text-center'
+										style={buttonStyle}
+									>
+										📊
+									</button>
+								</NavLink>
+							</>
+						) : (
+							<NavLink to='/results'>
+								<button
+									className='py-2 px-4 h-4 border-2 h-10 rounded-md text-center'
+									style={buttonStyle}
+								>
+									✅
+								</button>
+							</NavLink>
+						)}
 						<button
-							className="py-2 px-4 border-2 rounded-md text-center"
+							className='py-2 px-4 border-2 h-10 rounded-md text-center'
 							style={buttonStyle}
 							onClick={() => setLogOut(!logOut)}
 						>
@@ -85,20 +93,20 @@ export default function Header() {
 					</>
 				) : (
 					<>
-						<NavLink to="/login">
+						<NavLink to='/login'>
 							<button
-								className="py-2 px-4 border-2 rounded-md text-center"
+								className='py-2 px-4 border-2 h-10 rounded-md text-center'
 								style={buttonStyle}
 							>
-								Login
+								Кирүү
 							</button>
 						</NavLink>
-						<NavLink to="/register">
+						<NavLink to='/register'>
 							<button
-								className="py-2 px-4 border-2 rounded-md text-center"
+								className='py-2 px-4 border-2 h-10 rounded-md text-center'
 								style={buttonStyle}
 							>
-								Register
+								Каттоо
 							</button>
 						</NavLink>
 					</>

@@ -1,12 +1,12 @@
 /** @format */
 
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit"
-import axiosInstance, { setAuthToken, handleApiError } from "./axiosAuthUtils"
-import pb from "../../../services/pocketbase"
-import { AuthState, ISignUpPrompt, User } from "./authTypes"
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import pb from '../../../services/pocketbase'
+import { AuthState, ISignUpPrompt, User } from './authTypes'
+import axiosInstance, { handleApiError, setAuthToken } from './axiosAuthUtils'
 
 export const login = createAsyncThunk(
-	"auth/login",
+	'auth/login',
 	async (
 		{
 			identity,
@@ -17,18 +17,19 @@ export const login = createAsyncThunk(
 	) => {
 		try {
 			const response = await axiosInstance.post(
-				"/api/collections/users/auth-with-password",
+				'/api/collections/users/auth-with-password',
 				{ identity, password }
 			)
 			signIn({
 				auth: {
 					token: response.data.token,
-					type: "Bearer",
+					type: 'Bearer',
 				},
 				userState: {
 					email: identity,
 					userId: response.data.record.id,
 					student_name: response.data.record.username,
+					role: response.data.record.role,
 				},
 			})
 
@@ -40,14 +41,14 @@ export const login = createAsyncThunk(
 )
 
 export const signUp = createAsyncThunk(
-	"auth/signUp",
+	'auth/signUp',
 	async (
 		{ email, password, username, role, name, surname }: ISignUpPrompt,
 		{ rejectWithValue }
 	) => {
 		try {
 			const response = await axiosInstance.post(
-				"/api/collections/users/records",
+				'/api/collections/users/records',
 				{
 					email,
 					password,
@@ -60,7 +61,7 @@ export const signUp = createAsyncThunk(
 			)
 
 			// Request verification email
-			await pb.collection("users").requestVerification(email)
+			await pb.collection('users').requestVerification(email)
 
 			return response.data as User
 		} catch (error) {
@@ -70,10 +71,10 @@ export const signUp = createAsyncThunk(
 )
 
 export const verifyEmail = createAsyncThunk(
-	"auth/verifyEmail",
+	'auth/verifyEmail',
 	async ({ token }: { token: string }, { rejectWithValue }) => {
 		try {
-			await axiosInstance.post("/api/collections/users/confirm-verification", {
+			await axiosInstance.post('/api/collections/users/confirm-verification', {
 				token,
 			})
 			return true
@@ -84,10 +85,10 @@ export const verifyEmail = createAsyncThunk(
 )
 
 export const resendVerificationEmail = createAsyncThunk(
-	"auth/resendVerificationEmail",
+	'auth/resendVerificationEmail',
 	async ({ email }: { email: string }, { rejectWithValue }) => {
 		try {
-			await axiosInstance.post("/api/collections/users/request-verification", {
+			await axiosInstance.post('/api/collections/users/request-verification', {
 				email,
 			})
 			return true
@@ -98,11 +99,11 @@ export const resendVerificationEmail = createAsyncThunk(
 )
 
 export const forgotPassword = createAsyncThunk(
-	"auth/forgotPassword",
+	'auth/forgotPassword',
 	async ({ email }: { email: string }, { rejectWithValue }) => {
 		try {
 			await axiosInstance.post(
-				"/api/collections/users/request-password-reset",
+				'/api/collections/users/request-password-reset',
 				{ email }
 			)
 			return true
@@ -113,7 +114,7 @@ export const forgotPassword = createAsyncThunk(
 )
 
 export const resetPassword = createAsyncThunk(
-	"auth/resetPassword",
+	'auth/resetPassword',
 	async (
 		{
 			token,
@@ -128,7 +129,7 @@ export const resetPassword = createAsyncThunk(
 	) => {
 		try {
 			await axiosInstance.post(
-				"/api/collections/users/confirm-password-reset",
+				'/api/collections/users/confirm-password-reset',
 				{
 					token,
 					password,
@@ -150,22 +151,22 @@ const initialState: AuthState = {
 }
 
 const authSlice = createSlice({
-	name: "auth",
+	name: 'auth',
 	initialState,
 	reducers: {
-		logout: state => {
-			setAuthToken("")
+		logout: (state) => {
+			setAuthToken('')
 			state.user = null
 			state.isAuthenticated = false
 			state.error = null
 		},
-		clearError: state => {
+		clearError: (state) => {
 			state.error = null
 		},
 	},
-	extraReducers: builder => {
+	extraReducers: (builder) => {
 		builder
-			.addCase(login.pending, state => {
+			.addCase(login.pending, (state) => {
 				state.loading = true
 				state.error = null
 			})
@@ -179,7 +180,7 @@ const authSlice = createSlice({
 				state.loading = false
 				state.error = action.payload as string
 			})
-			.addCase(signUp.pending, state => {
+			.addCase(signUp.pending, (state) => {
 				state.loading = true
 				state.error = null
 			})
@@ -193,7 +194,7 @@ const authSlice = createSlice({
 				state.loading = false
 				state.error = action.payload as string
 			})
-			.addCase(verifyEmail.fulfilled, state => {
+			.addCase(verifyEmail.fulfilled, (state) => {
 				if (state.user) {
 					state.user.emailVerified = true
 					state.isAuthenticated = true
@@ -202,7 +203,7 @@ const authSlice = createSlice({
 			.addCase(verifyEmail.rejected, (state, action) => {
 				state.error = action.payload as string
 			})
-			.addCase(resendVerificationEmail.fulfilled, state => {
+			.addCase(resendVerificationEmail.fulfilled, (state) => {
 				state.error = null
 			})
 			.addCase(resendVerificationEmail.rejected, (state, action) => {

@@ -32,7 +32,7 @@ const App: React.FC = () => {
 	// })
 	return (
 		<div className="app">
-			<div className="flex  justify-center gap-4 items-center flex-wrap">
+			<div className="flex  justify-center gap-4 items-center ">
 				<Header />
 				<button
 					className="py-2  px-4 border-2 border-sky-500 rounded-md  text-center text-blue-500"
@@ -51,7 +51,7 @@ const App: React.FC = () => {
 			</div>
 			<div className="container">
 				<Routes>
-					<Route element={<AuthOutlet fallbackPath="/login" />}>
+					<Route element={<AuthOutlet fallbackPath="/register" />}>
 						<Route path="/" element={<Home />} />
 						<Route path="/dashboard" element={<Dashboard />} />
 						<Route path="/results" element={<Results />} />

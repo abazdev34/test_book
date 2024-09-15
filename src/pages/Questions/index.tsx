@@ -19,7 +19,7 @@ export default function Dashboard() {
  const { timeLeft, startTimer, stopTimer } = useTimer(60)
  const [isFinished, setIsFinished] = useState(false)
 
- console.log('questions.isCorrect', questions.isCorrect)
+//  console.log('questions.isCorrect', questions.isCorrect)
  // 60 seconds timer
  useEffect(() => {
   dispatch(getQuestions())
