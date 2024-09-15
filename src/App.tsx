@@ -12,11 +12,12 @@ import Login from "./pages/Auth/Login"
 import Register from "./pages/Auth/Register"
 import ResetPassword from "./pages/Auth/ResetPassword"
 import VerifyEmail from "./pages/Auth/VerifyEmail"
-import Home from "./pages/Home/"
+import Home from "./pages/Home"
 import Dashboard from "./pages/Questions"
 import Results from "./pages/Results"
-import StudentsResults from './pages/admin/studentsResults'
-import AllStudentsResultsShow from './pages/AllStudentsResultShow/AllStudentsResultShow'
+import StudentsResults from "./pages/admin/studentsResults"
+import AllStudentsResultsShow from "./pages/AllStudentsResultShow/AllStudentsResultShow"
+import ResendVerificationEmail from "./pages/Auth/RequestVerificationEmail"
 // import { refresh } from "./components/RefreshToken"
 // import createStore from "react-auth-kit/createStore"
 const App: React.FC = () => {
@@ -30,7 +31,7 @@ const App: React.FC = () => {
 	// 	refresh: refresh,
 	// })
 	return (
-		<div className="App">
+		<div className="app">
 			<div className="flex  justify-center gap-4 items-center flex-wrap">
 				<Header />
 				<button
@@ -55,18 +56,29 @@ const App: React.FC = () => {
 						<Route path="/dashboard" element={<Dashboard />} />
 						<Route path="/results" element={<Results />} />
 						<Route path="/all_results" element={<AllStudentsResultsShow />} />
-					<Route path="/admin" element={<StudentsResults/>} />
-
+						<Route path="/admin" element={<StudentsResults />} />
 					</Route>
 
 					<Route element={<ProtectedAuthRoute redirectPath="/dashboard" />}>
 						<Route path="/login" element={<Login />} />
 						<Route path="/register" element={<Register />} />
 						<Route path="/forgot-password" element={<ForgotPassword />} />
-						<Route path="/verify-email" element={<VerifyEmail />} />
+						<Route path="/verify-email/:token" element={<VerifyEmail />} />
+						<Route
+							path="/request/verification"
+							element={<ResendVerificationEmail />}
+						/>
 					</Route>
 
-					<Route path="/reset-password" element={<ResetPassword />} />
+					<Route
+						path="/auth/reset_password/:token"
+						element={<ResetPassword />}
+					/>
+
+					<Route
+						path="/auth/request/reset_password"
+						element={<ForgotPassword />}
+					/>
 				</Routes>
 			</div>
 		</div>

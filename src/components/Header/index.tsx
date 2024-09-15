@@ -30,8 +30,8 @@ export default function Header() {
 	}
 
 	return (
-		<header>
-			<nav className="flex justify-center items-center gap-4 h-16">
+		<header className="w-full flex ">
+			<nav className="flex justify-center items-center gap-4 h-16 flex-wrap">
 				<NavLink to="/">
 					<button
 						className="py-2 px-4 border-2 rounded-md text-center"

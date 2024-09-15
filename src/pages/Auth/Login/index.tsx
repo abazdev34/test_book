@@ -1,14 +1,13 @@
 /** @format */
 
+import React, { useState } from "react"
 import { useForm } from "react-hook-form"
-import { login } from "../../../redux/features/auth/authSlice"
-import { useDispatch } from "react-redux"
-import { useNavigate } from "react-router-dom"
+import { useDispatch, useSelector } from "react-redux"
+import { NavLink, useNavigate } from "react-router-dom"
 import useSignIn from "react-auth-kit/hooks/useSignIn"
 import { Bounce, toast, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
-import { useSelector } from "react-redux"
-import { useState } from "react"
+import { login } from "../../../redux/features/auth/authSlice"
 import { MdOutlinePassword } from "react-icons/md"
 
 export default function Login() {
@@ -44,7 +43,7 @@ export default function Login() {
 				notifyError(error)
 			}
 		} catch (error) {
-			console.log("error", error)
+			console.log("ката", error)
 		}
 	}
 
@@ -54,33 +53,33 @@ export default function Login() {
 
 	return (
 		<div className="flex flex-col justify-center items-center h-screen gap-4">
-			<h1 className="text-center text-blue-500 text-3xl">Login</h1>
+			<h1 className="text-center text-blue-500 text-3xl">Кирүү</h1>
 			<form
 				action="#"
 				className="max-w-[400px] w-full h-72 flex flex-col gap-4 p-4 rounded-md mx-auto bg-blue-400"
 				onSubmit={handleSubmit(onSubmit)}
 			>
 				<div className="flex flex-col gap-2 text-white font-semibold">
-					<label htmlFor="email">Email</label>
+					<label htmlFor="email">Электрондук почта</label>
 					<input
 						required
 						{...register("email", { required: true })}
 						className="authInputs text-blue-500 p-2 rounded-sm"
 						type="text"
 						id="email"
-						placeholder="Enter your email"
+						placeholder="Электрондук почтаңызды жазыңыз"
 					/>
 				</div>
 
 				<div className="flex flex-col gap-2 text-white font-semibold relative">
-					<label htmlFor="password">Password</label>
+					<label htmlFor="password">Сырсөз</label>
 					<input
 						required
 						{...register("password", { required: true })}
 						className="authInputs text-blue-500 p-2 rounded-sm"
 						type={showPassword ? "text" : "password"}
 						id="password"
-						placeholder="Enter your password"
+						placeholder="Сырсөзүңүздү жазыңыз"
 					/>
 					<button
 						type="button"
@@ -95,9 +94,13 @@ export default function Login() {
 					type="submit"
 					className="py-2 px-4 text-blue-500 font-semibold text-xl border-none bg-white mt-[25px] rounded-md text-center"
 				>
-					Login
+					Кирүү
 				</button>
 			</form>
+			<NavLink to="/auth/request/reset_password">
+				Сыр сөздү унутуп калдыңызбы?
+			</NavLink>
+
 			<ToastContainer
 				position="top-right"
 				autoClose={5000}

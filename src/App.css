@@ -8,14 +8,18 @@
 	margin: 0 auto;
 	padding: 10px;
 }
-
 body {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	
 	color: rgb(18, 93, 222);
 	transition: all 0.3s ease-in-out;
 }
 
 * {
 	/* outline: 2px solid green; */
+	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
 }

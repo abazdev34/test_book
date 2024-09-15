@@ -2,19 +2,8 @@
 
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit"
 import axiosInstance, { setAuthToken, handleApiError } from "./axiosAuthUtils"
-export interface User {
-	id: string
-	email: string
-	username: string
-	emailVerified: boolean
-}
-
-export interface AuthState {
-	user: User | null
-	isAuthenticated: boolean
-	loading: boolean
-	error: string | null
-}
+import pb from "../../../services/pocketbase"
+import { AuthState, ISignUpPrompt, User } from "./authTypes"
 
 export const login = createAsyncThunk(
 	"auth/login",
@@ -31,7 +20,6 @@ export const login = createAsyncThunk(
 				"/api/collections/users/auth-with-password",
 				{ identity, password }
 			)
-			console.log("response", response)
 			signIn({
 				auth: {
 					token: response.data.token,
@@ -46,7 +34,6 @@ export const login = createAsyncThunk(
 
 			return response.data.record as User
 		} catch (error) {
-			console.log("password", password)
 			return rejectWithValue(handleApiError(error))
 		}
 	}
@@ -55,15 +42,7 @@ export const login = createAsyncThunk(
 export const signUp = createAsyncThunk(
 	"auth/signUp",
 	async (
-		{
-			email,
-			password,
-			username,
-		}: {
-			email: string
-			password: string
-			username: string
-		},
+		{ email, password, username, role, name, surname }: ISignUpPrompt,
 		{ rejectWithValue }
 	) => {
 		try {
@@ -74,15 +53,16 @@ export const signUp = createAsyncThunk(
 					password,
 					passwordConfirm: password,
 					username,
+					role,
+					name,
+					surname,
 				}
 			)
-			// Request email verification
-			setTimeout(() => {
-				axiosInstance.post("/api/collections/users/request-verification", {
-					email,
-				})
-			}, 4000)
-			return password
+
+			// Request verification email
+			await pb.collection("users").requestVerification(email)
+
+			return response.data as User
 		} catch (error) {
 			return rejectWithValue(handleApiError(error))
 		}
@@ -102,8 +82,9 @@ export const verifyEmail = createAsyncThunk(
 		}
 	}
 )
+
 export const resendVerificationEmail = createAsyncThunk(
-	"auth/verifyEmail",
+	"auth/resendVerificationEmail",
 	async ({ email }: { email: string }, { rejectWithValue }) => {
 		try {
 			await axiosInstance.post("/api/collections/users/request-verification", {
@@ -118,28 +99,30 @@ export const resendVerificationEmail = createAsyncThunk(
 
 export const forgotPassword = createAsyncThunk(
 	"auth/forgotPassword",
-	async (email: string, { rejectWithValue }) => {
+	async ({ email }: { email: string }, { rejectWithValue }) => {
 		try {
-			await axiosInstance.post("/collections/users/request-password-reset", {
-				email,
-			})
+			await axiosInstance.post(
+				"/api/collections/users/request-password-reset",
+				{ email }
+			)
 			return true
 		} catch (error) {
 			return rejectWithValue(handleApiError(error))
 		}
 	}
 )
+
 export const resetPassword = createAsyncThunk(
 	"auth/resetPassword",
 	async (
 		{
 			token,
-			newPassword,
-			newPasswordConfirm,
+			password,
+			passwordConfirm,
 		}: {
 			token: string
-			newPassword: string
-			newPasswordConfirm: string
+			password: string
+			passwordConfirm: string
 		},
 		{ rejectWithValue }
 	) => {
@@ -148,10 +131,11 @@ export const resetPassword = createAsyncThunk(
 				"/api/collections/users/confirm-password-reset",
 				{
 					token,
-					newPassword,
-					newPasswordConfirm,
+					password,
+					passwordConfirm,
 				}
 			)
+			return true
 		} catch (error) {
 			return rejectWithValue(handleApiError(error))
 		}
@@ -216,6 +200,12 @@ const authSlice = createSlice({
 				}
 			})
 			.addCase(verifyEmail.rejected, (state, action) => {
+				state.error = action.payload as string
+			})
+			.addCase(resendVerificationEmail.fulfilled, state => {
+				state.error = null
+			})
+			.addCase(resendVerificationEmail.rejected, (state, action) => {
 				state.error = action.payload as string
 			})
 	},
