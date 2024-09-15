@@ -38,7 +38,8 @@ export default function Login() {
 			)
 
 			if (login.fulfilled.match(resultAction)) {
-				navigate("/dashboard")
+				window.location.reload()
+				navigate("/")
 			} else {
 				notifyError(error)
 			}

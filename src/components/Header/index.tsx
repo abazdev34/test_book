@@ -45,14 +45,7 @@ export default function Header() {
 
 				{isAuthenticated ? (
 					<>
-						<NavLink to='/dashboard'>
-							<button
-								className='py-2 px-4 border-2 h-10 rounded-md text-center'
-								style={buttonStyle}
-							>
-								<FaList />
-							</button>
-						</NavLink>
+						
 						{auth.role === 'admin' ? (
 							<>
 								<NavLink to='/admin'>
@@ -73,7 +66,16 @@ export default function Header() {
 								</NavLink>
 							</>
 						) : (
-							<NavLink to='/results'>
+					<div className="">
+						<NavLink to='/dashboard'>
+							<button
+								className='py-2 px-4 border-2 h-10 rounded-md text-center'
+								style={buttonStyle}
+							>
+								<FaList />
+							</button>
+						</NavLink>
+						<NavLink to='/results'>
 								<button
 									className='py-2 px-4 h-4 border-2 h-10 rounded-md text-center'
 									style={buttonStyle}
@@ -81,6 +83,7 @@ export default function Header() {
 									✅
 								</button>
 							</NavLink>
+					</div>
 						)}
 						<button
 							className='py-2 px-4 border-2 h-10 rounded-md text-center'
