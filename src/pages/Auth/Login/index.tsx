@@ -61,7 +61,7 @@ export default function Login() {
 				onSubmit={handleSubmit(onSubmit)}
 			>
 				<div className="flex flex-col gap-2 text-white font-semibold">
-					<label htmlFor="email">Электрондук почта</label>
+					<label htmlFor="email">Логин</label>
 					<input
 						required
 						{...register("email", { required: true })}

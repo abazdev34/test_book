@@ -104,20 +104,15 @@ export default function AdminPanel() {
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="answer">
             Туура жооп
           </label>
-          <select
+          <input
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="answer"
+            type="text"
             name="answer"
             value={newQuestion.answer}
             onChange={handleInputChange}
             required
-          >
-            <option value="">Туура жоопту тандаңыз</option>
-            <option value="a">A</option>
-            <option value="b">B</option>
-            <option value="c">C</option>
-            <option value="d">D</option>
-          </select>
+          />
         </div>
         <div className="flex items-center justify-between">
           <button

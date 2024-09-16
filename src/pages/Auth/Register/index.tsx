@@ -69,7 +69,7 @@ export default function Register() {
 					register={register}
 				/>
 				<InputField
-					label="Колдонуучунун аты"
+					label="Логин"
 					id="username"
 					type="text"
 					placeholder="Колдонуучу атыңызды жазыңыз"
