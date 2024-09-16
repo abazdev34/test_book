@@ -1,107 +1,161 @@
-/** @format */
+import React, { useState, useEffect } from 'react';
+import PocketBase from 'pocketbase';
 
-import { useState } from "react"
-import { useDispatch } from "react-redux"
-import { addQuestion } from "../../redux/features/question/questionSlice"
+const pb = new PocketBase('https://tasbih.pockethost.io');
 
-export default function AdminAddQuestion() {
-	const dispatch = useDispatch()
-	const [questionState, setQuestionState] = useState({
-		question: "",
-		a: "",
-		b: "",
-		c: "",
-		d: "",
-		answer: "",
-	})
+export default function AdminPanel() {
+  const [questions, setQuestions] = useState([]);
+  const [newQuestion, setNewQuestion] = useState({
+    question: '',
+    a: '',
+    b: '',
+    c: '',
+    d: '',
+    answer: ''
+  });
+  const [editingId, setEditingId] = useState(null);
 
-	const handleSubmit = e => {
-		e.preventDefault()
-		dispatch(addQuestion(questionState))
-		setQuestionState({ question: "", a: "", b: "", c: "", d: "", answer: "" })
-	}
+  useEffect(() => {
+    fetchQuestions();
+  }, []);
 
-	const handleInputChange = e => {
-		const { name, value } = e.target
-		setQuestionState(prev => ({ ...prev, [name]: value }))
-	}
+  const fetchQuestions = async () => {
+    try {
+      const records = await pb.collection('questions').getList(1, 50);
+      setQuestions(records.items);
+    } catch (error) {
+      console.error('Error fetching questions:', error);
+    }
+  };
 
-	return (
-		<div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
-			<div className="relative py-3 sm:max-w-xl sm:mx-auto">
-				<div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-					<h1 className="text-2xl font-semibold mb-5 text-center">
-						Жаңы суроо кошуу
-					</h1>
-					<form onSubmit={handleSubmit} className="space-y-4">
-						<div>
-							<label
-								htmlFor="question"
-								className="block text-sm font-medium text-gray-700"
-							>
-								Суроо
-							</label>
-							<input
-								type="text"
-								id="question"
-								name="question"
-								value={questionState.question}
-								onChange={handleInputChange}
-								className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-								required
-							/>
-						</div>
-						{["a", "b", "c", "d"].map(option => (
-							<div key={option}>
-								<label
-									htmlFor={option}
-									className="block text-sm font-medium text-gray-700"
-								>
-									Вариант {option.toUpperCase()}
-								</label>
-								<input
-									type="text"
-									id={option}
-									name={option}
-									value={questionState[option]}
-									onChange={handleInputChange}
-									className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-									required
-								/>
-							</div>
-						))}
-						<div>
-							<label
-								htmlFor="answer"
-								className="block text-sm font-medium text-gray-700"
-							>
-								Туура жооп
-							</label>
-							<select
-								id="answer"
-								name="answer"
-								value={questionState.answer}
-								onChange={handleInputChange}
-								className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-								required
-							>
-								<option value="">Туура жоопту тандаңыз</option>
-								{["a", "b", "c", "d"].map(option => (
-									<option key={option} value={questionState[option]}>
-										Вариант {option.toUpperCase()}
-									</option>
-								))}
-							</select>
-						</div>
-						<button
-							type="submit"
-							className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-						>
-							Суроону кошуу
-						</button>
-					</form>
-				</div>
-			</div>
-		</div>
-	)
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewQuestion(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (editingId) {
+        await pb.collection('questions').update(editingId, newQuestion);
+      } else {
+        await pb.collection('questions').create(newQuestion);
+      }
+      setNewQuestion({ question: '', a: '', b: '', c: '', d: '', answer: '' });
+      setEditingId(null);
+      fetchQuestions();
+    } catch (error) {
+      console.error('Error submitting question:', error);
+    }
+  };
+
+  const handleEdit = (question) => {
+    setNewQuestion(question);
+    setEditingId(question.id);
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm('Бул суроону өчүрүүнү каалайсызбы?')) {
+      try {
+        await pb.collection('questions').delete(id);
+        fetchQuestions();
+      } catch (error) {
+        console.error('Error deleting question:', error);
+      }
+    }
+  };
+
+  return (
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Суроолорду башкаруу</h1>
+      
+      <form onSubmit={handleSubmit} className="mb-8 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="question">
+            Суроо
+          </label>
+          <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="question"
+            type="text"
+            name="question"
+            value={newQuestion.question}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        {['a', 'b', 'c', 'd'].map(option => (
+          <div key={option} className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor={option}>
+              Вариант {option.toUpperCase()}
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id={option}
+              type="text"
+              name={option}
+              value={newQuestion[option]}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+        ))}
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="answer">
+            Туура жооп
+          </label>
+          <select
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="answer"
+            name="answer"
+            value={newQuestion.answer}
+            onChange={handleInputChange}
+            required
+          >
+            <option value="">Туура жоопту тандаңыз</option>
+            <option value="a">A</option>
+            <option value="b">B</option>
+            <option value="c">C</option>
+            <option value="d">D</option>
+          </select>
+        </div>
+        <div className="flex items-center justify-between">
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="submit"
+          >
+            {editingId ? 'Жаңыртуу' : 'Кошуу'}
+          </button>
+        </div>
+      </form>
+      
+      <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <h2 className="text-xl font-bold mb-4">Суроолор тизмеси</h2>
+        {questions.map(q => (
+          <div key={q.id} className="mb-4 p-4 border rounded">
+            <p className="font-bold">{q.question}</p>
+            <p>A: {q.a}</p>
+            <p>B: {q.b}</p>
+            <p>C: {q.c}</p>
+            <p>D: {q.d}</p>
+            <p>Туура жооп: {q.answer}</p>
+            <div className="mt-2">
+              <button
+                onClick={() => handleEdit(q)}
+                className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded mr-2"
+              >
+                Өзгөртүү
+              </button>
+              <button
+                onClick={() => handleDelete(q.id)}
+                className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
+              >
+                Өчүрүү
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }

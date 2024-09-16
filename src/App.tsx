@@ -19,6 +19,7 @@ import StudentsResults from "./pages/admin/studentsResults"
 import AllStudentsResultsShow from "./pages/AllStudentsResultShow/AllStudentsResultShow"
 import ResendVerificationEmail from "./pages/Auth/RequestVerificationEmail"
 import AdminAddQuestions from "./pages/admin/adminAddQuestions"
+import AdminPanel from './pages/admin/adminAddQuestions'
 // import { refresh } from "./components/RefreshToken"
 // import createStore from "react-auth-kit/createStore"
 const App: React.FC = () => {
@@ -58,6 +59,8 @@ const App: React.FC = () => {
 						<Route path="/results" element={<Results />} />
 						<Route path="/all_results" element={<AllStudentsResultsShow />} />
 						<Route path="/admin" element={<StudentsResults />} />
+						<Route path="/adminPanel" element={<AdminPanel/>} />
+
 						<Route path="/add_questions" element={<AdminAddQuestions/>} />
 					</Route>
 
