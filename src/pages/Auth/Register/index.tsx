@@ -1,21 +1,58 @@
 /** @format */
 
 import React, { useState } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, SubmitHandler } from "react-hook-form"
 import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { signUp } from "../../../redux/features/auth/authSlice"
 import { MdOutlinePassword } from "react-icons/md"
 import { Bounce, toast, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
+import { AppDispatch } from "../../../redux/store" // Assuming you have a store.ts file
 
-export default function Register() {
-	const dispatch = useDispatch()
-	const { register, handleSubmit } = useForm()
+interface ISignUpPrompt {
+	email: string
+	username: string
+	password: string
+	name: string
+	surname: string
+}
+
+interface InputFieldProps {
+	label: string
+	id: keyof ISignUpPrompt
+	type: string
+	placeholder: string
+	register: any
+}
+
+const InputField: React.FC<InputFieldProps> = ({
+	label,
+	id,
+	type,
+	placeholder,
+	register,
+}) => (
+	<div className="flex flex-col gap-2 text-white font-semibold">
+		<label htmlFor={id}>{label}</label>
+		<input
+			required
+			{...register(id, { required: true })}
+			className="authInputs text-blue-500 p-2 rounded-sm"
+			type={type}
+			id={id}
+			placeholder={placeholder}
+		/>
+	</div>
+)
+
+const Register: React.FC = () => {
+	const dispatch = useDispatch<AppDispatch>()
+	const { register, handleSubmit } = useForm<ISignUpPrompt>()
 	const navigate = useNavigate()
 	const [showPassword, setShowPassword] = useState(false)
 
-	const notifyError = text =>
+	const notifyError = (text: string) =>
 		toast.error(text, {
 			position: "top-right",
 			autoClose: 5000,
@@ -28,7 +65,7 @@ export default function Register() {
 			transition: Bounce,
 		})
 
-	const onSubmit = async data => {
+	const onSubmit: SubmitHandler<ISignUpPrompt> = async data => {
 		try {
 			const result = await dispatch(
 				signUp({
@@ -36,7 +73,6 @@ export default function Register() {
 					username: data.username,
 					password: data.password,
 					role: "student",
-					isVerified: true,
 					name: data.name,
 					surname: data.surname,
 				})
@@ -47,7 +83,7 @@ export default function Register() {
 				toast.success("Ийгиликтүү катталды!")
 				navigate("/request/verification")
 			}
-		} catch (error) {
+		} catch (error: string | null) {
 			console.error("Каттоодогу ката:", error)
 			notifyError(error.message || "Каттоодо ката кетти")
 		}
@@ -57,7 +93,6 @@ export default function Register() {
 		<div className="flex flex-col justify-center items-center h-screen gap-4">
 			<h1 className="text-center text-blue-500 text-3xl">Каттоо</h1>
 			<form
-				action="#"
 				className="max-w-[400px] w-full flex flex-col gap-4 p-4 rounded-md mx-auto bg-blue-400"
 				onSubmit={handleSubmit(onSubmit)}
 			>
@@ -131,16 +166,4 @@ export default function Register() {
 	)
 }
 
-const InputField = ({ label, id, type, placeholder, register }) => (
-	<div className="flex flex-col gap-2 text-white font-semibold">
-		<label htmlFor={id}>{label}</label>
-		<input
-			required
-			{...register(id, { required: true })}
-			className="authInputs text-blue-500 p-2 rounded-sm"
-			type={type}
-			id={id}
-			placeholder={placeholder}
-		/>
-	</div>
-)
+export default Register

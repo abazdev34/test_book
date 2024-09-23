@@ -5,7 +5,7 @@ import { Navigate, Outlet } from "react-router-dom"
 import useIsAuthenticated from "react-auth-kit/hooks/useIsAuthenticated"
 
 const ProtectedAuthRoute: React.FC<{ redirectPath?: string }> = ({
-	redirectPath = "/dashboard",
+	redirectPath = "/",
 }) => {
 	const isAuthenticated = useIsAuthenticated()
 

@@ -1,28 +1,46 @@
-// useTimer.js
-import { useState, useEffect } from 'react';
+/** @format */
 
-export function useTimer(initialTime) {
-  const [timeLeft, setTimeLeft] = useState(initialTime);
-  const [isRunning, setIsRunning] = useState(false);
+import { useState, useEffect, useCallback } from "react"
 
-  useEffect(() => {
-    let timer;
-    if (isRunning && timeLeft > 0) {
-      timer = setInterval(() => {
-        setTimeLeft((prevTime) => prevTime - 1);
-      }, 1000);
-    }
-    return () => clearInterval(timer);
-  }, [isRunning, timeLeft]);
+export function useTimer(initialTime: number) {
+	const [timeLeft, setTimeLeft] = useState<number>(() => {
+		const savedTime = localStorage.getItem("timeLeft")
+		return savedTime ? parseInt(savedTime, 10) : initialTime
+	})
+	const [isRunning, setIsRunning] = useState<boolean>(false)
 
-  const startTimer = () => {
-    setTimeLeft(initialTime);
-    setIsRunning(true);
-  };
+	useEffect(() => {
+		localStorage.setItem("timeLeft", timeLeft.toString())
+	}, [timeLeft])
 
-  const stopTimer = () => {
-    setIsRunning(false);
-  };
+	useEffect(() => {
+		let timer: number | undefined
+		if (isRunning && timeLeft > 0) {
+			timer = window.setInterval(() => {
+				setTimeLeft(prevTime => {
+					const newTime = prevTime - 1
+					localStorage.setItem("timeLeft", newTime.toString())
+					return newTime
+				})
+			}, 1000)
+		} else if (timeLeft === 0) {
+			setIsRunning(false)
+		}
+		return () => clearInterval(timer)
+	}, [isRunning, timeLeft])
 
-  return { timeLeft, startTimer, stopTimer };
+	const startTimer = useCallback(() => {
+		setIsRunning(true)
+	}, [])
+
+	const stopTimer = useCallback(() => {
+		setIsRunning(false)
+	}, [])
+
+	const resetTimer = useCallback(() => {
+		setTimeLeft(initialTime)
+		localStorage.setItem("timeLeft", initialTime.toString())
+	}, [initialTime])
+
+	return { timeLeft, startTimer, stopTimer, resetTimer }
 }

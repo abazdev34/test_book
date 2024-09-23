@@ -28,7 +28,7 @@ export const login = createAsyncThunk(
 				userState: {
 					email: identity,
 					userId: response.data.record.id,
-					student_name: response.data.record.username,
+					student_name: response.data.record.name,
 					role: response.data.record.role,
 				},
 			})

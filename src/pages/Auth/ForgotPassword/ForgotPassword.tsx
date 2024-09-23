@@ -2,20 +2,18 @@
 
 import { useDispatch, useSelector } from "react-redux"
 import { forgotPassword } from "../../../redux/features/auth/authSlice"
-import { useState } from "react"
+import React, { useState } from "react"
 
 export default function ForgotPassword() {
 	const dispatch = useDispatch()
 	const [email, setEmail] = useState("")
-	const error = useSelector(state => state.auth.error)
+	const error = useSelector((state: any) => state.auth.error)
 
-	const handleSubmit = async e => {
+	const handleSubmit = async (e: React.HTMLButtonElement<SubmitEvent>) => {
 		e.preventDefault()
 		try {
 			await dispatch(forgotPassword({ email })).unwrap()
-			// Handle success (e.g., show a success message)
 		} catch (err) {
-			// Handle error (e.g., show error message)
 			console.error("Failed to send reset email:", err)
 		}
 	}

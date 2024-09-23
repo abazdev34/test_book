@@ -12,9 +12,10 @@ body {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	
+
 	color: rgb(18, 93, 222);
 	transition: all 0.3s ease-in-out;
+	font-display: swap;
 }
 
 * {

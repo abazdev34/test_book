@@ -17,11 +17,11 @@ export default function AskToLogOut({ setLogOut, signOut }) {
 	const navigate = useNavigate()
 	return (
 		<div
-			className="absolute w-full h-full rounded-2xl flex flex-col items-center justify-center gap-10"
+			className="absolute max-w-96 h-72 w-full ml-auto mr-auto  rounded-2xl flex flex-col items-center justify-center gap-10 left-0 right-0 z-100 "
 			style={{ backgroundColor: colors.primary }}
 		>
-			<h2 className="text-2xl" style={{ color: colors.background }}>
-				Are you sure you want to logout?
+			<h2 className="text-xl" style={{ color: colors.background }}>
+				Аккаунттан чыкканга макулсузбу ?
 			</h2>
 			<div className="flex justify-around w-full ">
 				<button
@@ -41,7 +41,7 @@ export default function AskToLogOut({ setLogOut, signOut }) {
 						}
 					}}
 				>
-					Yes
+					Ооба
 				</button>
 				<button
 					className="p-3 rounded-lg"
@@ -52,7 +52,7 @@ export default function AskToLogOut({ setLogOut, signOut }) {
 					}}
 					onClick={() => setLogOut(false)}
 				>
-					No
+					Жок
 				</button>
 			</div>
 		</div>

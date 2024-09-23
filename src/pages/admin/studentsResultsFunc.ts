@@ -1,9 +1,14 @@
 /** @format */
 
+import {
+	IStudentResultOneQuestion,
+	IStudentResultSorted,
+} from "./studentsResults"
+
 // src/utils/resultUtils.js
 
-export const groupResultsByStudent = results => {
-	return results.reduce((acc, result) => {
+export const groupResultsByStudent = (results: IStudentResultOneQuestion[]) => {
+	return results.reduce((acc, result: IStudentResultOneQuestion) => {
 		if (!acc[result.student_id]) {
 			acc[result.student_id] = {
 				student_id: result.student_id,
@@ -24,13 +29,16 @@ export const groupResultsByStudent = results => {
 	}, {})
 }
 
-export const formatTime = seconds => {
+export const formatTime = (seconds: number) => {
 	const minutes = Math.floor(seconds / 60)
 	const remainingSeconds = seconds % 60
 	return `${minutes}м ${remainingSeconds}с`
 }
 
-export const sortStudentResults = (studentResults, sortBy) => {
+export const sortStudentResults = (
+	studentResults: IStudentResultSorted,
+	sortBy: string
+) => {
 	return Object.values(studentResults).sort((a, b) => {
 		switch (sortBy) {
 			case "name":
@@ -46,14 +54,13 @@ export const sortStudentResults = (studentResults, sortBy) => {
 		}
 	})
 }
-export const sortResultsByCorrectAnswersAndTime = (results) => {
-  return Object.values(groupResultsByStudent(results)).sort((a, b) => {
-    // First, sort by correct answers (descending)
-    if (b.correctAnswers !== a.correctAnswers) {
-      return b.correctAnswers - a.correctAnswers;
-    }
-    // If correct answers are equal, sort by total time (ascending)
-    return a.totalTime - b.totalTime;
-  });
-};
-
+export const sortResultsByCorrectAnswersAndTime = (
+	results: IStudentResultSorted
+) => {
+	return Object.values(groupResultsByStudent(results)).sort((a, b) => {
+		if (b.correctAnswers !== a.correctAnswers) {
+			return b.correctAnswers - a.correctAnswers
+		}
+		return a.totalTime - b.totalTime
+	})
+}

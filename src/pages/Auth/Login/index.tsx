@@ -41,7 +41,7 @@ export default function Login() {
 				window.location.reload()
 				navigate("/")
 			} else {
-				notifyError(error)
+				notifyError(error === "Network Error" ? "Интернеттен ката " : error)
 			}
 		} catch (error) {
 			console.log("ката", error)

@@ -166,11 +166,11 @@ const questionSlice = createSlice({
 			})
 			.addCase(getQuestions.rejected, (state, action) => {
 				state.loading = false
-				state.error = action.error.message // Store the error message
+				state.error = action.error.message
 			})
 			.addCase(getResults.pending, state => {
 				state.loading = true
-				state.error = null // Reset error on new request
+				state.error = null
 			})
 			.addCase(getResults.fulfilled, (state, action) => {
 				state.loading = false
